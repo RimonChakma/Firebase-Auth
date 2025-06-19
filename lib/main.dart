@@ -17,50 +17,41 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignUpScreen(),
+      home: LoginScreen(),
     );
   }
 }
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _LoginScreenState extends State<LoginScreen> {
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final firebaseAuth = FirebaseAuth.instance;
 
-  String message = "";
-
-  void signUp () async {
-
+  void login () async {
     try {
-      await firebaseAuth.createUserWithEmailAndPassword(
+      await firebaseAuth.signInWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text
       );
       setState(() {
-        message = "sign up success : $message";
+        print("success login");
       });
-    }on FirebaseAuthException catch (e) {
-      setState(() {
-        message = "Login failed: ${e.message}";
-      });
+    }on FirebaseAuthException catch (error) {
+      print("failed login $error");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Sign Up"),
-        leading: IconButton(onPressed: (){},
-            icon: Icon(Icons.arrow_back)
-        ),),
       body: Padding(padding: EdgeInsets.all(15),child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -86,10 +77,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 labelText: "password"
             ),),
           SizedBox(height: 10,),
-          ElevatedButton(onPressed: signUp, child: Text("Sign Up")),
-          SizedBox(height: 10,),
-          Text(message)
-      ],),),
+          ElevatedButton(onPressed: login, child: Text("login")),
+          SizedBox(height: 25,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("created an account"),
+              InkWell(
+                onTap: () => Navigator.push(
+                    context, MaterialPageRoute(
+                  builder: (context) => SignUpScreen(),)),
+                child: Text("  Sign up",style: TextStyle(color: Colors.blue),),
+              )
+          ],)
+        ],
+      ),),
     );
   }
 }
