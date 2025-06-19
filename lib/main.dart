@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void signUp () async {
 
     try {
-      firebaseAuth.createUserWithEmailAndPassword(
+      await firebaseAuth.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text
       );
@@ -65,8 +65,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextFormField(
-            decoration: InputDecoration(),
-          )
+            controller: emailController,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                hintText: "phone number or email",
+                labelText: "email"
+            ),),
+
+          SizedBox(height: 10,),
+
+          TextFormField(
+            controller: passwordController,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                hintText: "password",
+                labelText: "password"
+            ),),
+          SizedBox(height: 10,),
+          ElevatedButton(onPressed: signUp, child: Text("Sign Up")),
+          SizedBox(height: 10,),
+          Text(message)
       ],),),
     );
   }
